@@ -132,7 +132,7 @@ info.update = function(countryName) {
 	axios.get(url_base + `newestData/${countryName}`)
 	 .then(res => {
 	const total_vaccinations = res.data.total_vaccinations;
-	this._div.innerHTML = '<h4>World Total COVID Vaccinations Map</h4>' + '</b><br />' +  (countryName && total_vaccinations ?
+	this._div.innerHTML = '<h4>World Total COVID Vaccinations Map</h4>' + '</b><br />' +  (countryName ?
         'Country Name: ' + countryName  + '</b><br />' +` Vaccinations: ` +  total_vaccinations
         : 'Hover over a country');
 	
