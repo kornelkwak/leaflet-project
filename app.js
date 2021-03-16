@@ -43,11 +43,11 @@ fetch("world.geojson")
 		layer.setStyle({
 			fillColor: getColor(layer.feature.properties.total_vaccinations),
 			});
+		layer.bindPopup(`<h4>${countryName}</h4>` + `Vaccinations: ` +  total_vaccinations);
 		})
 
-
 });
-console.log();
+
 });
 
 function getColor(d) {
@@ -89,7 +89,10 @@ function resetHighlight(e) {
 }
 
 function zoomToFeature(e) {
+	const layer = e.target;
 	mymap.fitBounds(e.target.getBounds());
+	
+	
 }
 
 function onEachFeature(feature, layer) {
@@ -132,14 +135,13 @@ info.update = function(countryName) {
 	axios.get(url_base + `newestData/${countryName}`)
 	 .then(res => {
 	const total_vaccinations = res.data.total_vaccinations;
-	this._div.innerHTML = '<h4>World Total COVID Vaccinations Map</h4>' + '</b><br />' +  (countryName ?
+	this._div.innerHTML = '<h4>World Total COVID Vaccinations Map</h4>' + '</b><br />' +  (countryName  ?
         'Country Name: ' + countryName  + '</b><br />' +` Vaccinations: ` +  total_vaccinations
         : 'Hover over a country');
-	
-	
+		
 })
-
 
 };
 
 info.addTo(mymap);
+
