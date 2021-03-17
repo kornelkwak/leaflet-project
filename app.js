@@ -43,7 +43,7 @@ fetch("world.geojson")
 		layer.setStyle({
 			fillColor: getColor(layer.feature.properties.total_vaccinations),
 			});
-		layer.bindPopup(`<h4>${countryName}</h4>` + `Vaccinations: ` +  total_vaccinations);
+		layer.bindPopup(`<h4>${countryName}</h4>` + `Vaccinations: ` +  total_vaccinations.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "));
 		})
 
 });
