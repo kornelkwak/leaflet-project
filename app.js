@@ -26,25 +26,59 @@ fetch("world.geojson")
 	
 	tempID = 1;
 
+	//Data from geojson about each country
 	geojson.eachLayer(function(layer) {
 		layer.feature.properties.layerID = tempID;
 		tempID+=1;
 		let countryName = layer.feature.properties.NAME_ENGL;
 		let isocountryID = layer.feature.properties.iso3;
-		
+			
 
+		//API swiftuijam.herokuapp.com COVID vaccinations
 		const url_base_covid  = `https://swiftuijam.herokuapp.com/`;
  
 		axios.get(url_base_covid + `newestData/${countryName}`)
  		.then(res => {
     	let total_vaccinations = res.data.total_vaccinations;
+		let vaccineTypes = res.data.vaccine;
 		layer.feature.properties.total_vaccinations = total_vaccinations;
+			
 		
-		layer.setStyle({
-			fillColor: getColor(layer.feature.properties.total_vaccinations),
-			});
-		layer.bindPopup(`<h4>${countryName}</h4>` + `Vaccinations: ` +  total_vaccinations.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "));
-		})
+		//API RapidAPI - country population
+		const options = {
+			method: 'GET',
+			url: 'https://world-population.p.rapidapi.com/population',
+			params: {country_name: `${countryName}`},
+			headers: {
+			  'x-rapidapi-key': 'f4f639e93emsh6edef7a01a34397p1bb44fjsn6514b4e38f11',
+			  'x-rapidapi-host': 'world-population.p.rapidapi.com'
+			}
+		  };
+		  
+		  axios.request(options).then(function (response) {
+			  console.log(response.data.body.population);
+			  let population = response.data.body.population;
+			  let percentVaccinated = parseFloat(total_vaccinations/population * 100).toFixed(2);
+			  
+			layer.feature.properties.population = population;
+			layer.feature.properties.percentVaccinated = percentVaccinated;
+			console.log(layer.feature.properties.percentVaccinated);
+
+			layer.setStyle({
+				fillColor: getColor(layer.feature.properties.percentVaccinated),
+				});
+			layer.bindPopup(`<h4>${countryName}</h4>` 
+			+ `Total vaccinations: ` +  total_vaccinations.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + '</b><br />' 
+			+ `Population: ` +  population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + '</b><br />'
+			+ `${percentVaccinated}% of population is vaccinated` + '</b><br />'
+			+ `Vaccine: ${vaccineTypes}`);
+			
+		  }).catch(function (error) {
+			  console.error(error);
+		  });
+		
+		  console.log(res.data);
+	})
 
 });
 
@@ -52,13 +86,13 @@ fetch("world.geojson")
 
 function getColor(d) {
 	
-	return d > 5000000 ? '#0DA904' :
-		   d > 2000000  ? '#A6F702' :
-		   d > 1000000  ? '#E9F702' :
-		   d > 500000 ? '#E78F09' :
-		   d > 50000   ? '#F0760A' :
-		   d > 1000   ? '#F02D0A' :
-					  '#6E6E6E';
+	return d > 50 ? '#6E6E6E':
+		   d > 40 ? '#0DA904':
+		   d > 20 ? '#A6F702':
+		   d > 10 ? '#E78F09':
+		   d > 10 ? '#F0760A':
+		   d >= 0  ? '#F02D0A':
+					'#6E6E6E';
 }
 
 function highlightFeature(e) {
@@ -83,7 +117,7 @@ function resetHighlight(e) {
 	geojson.resetStyle(e.target);
 	info.update();
 	layer.setStyle({
-		fillColor: getColor(layer.feature.properties.total_vaccinations),
+		fillColor: getColor(layer.feature.properties.percentVaccinated),
 		});
 	
 }
@@ -129,14 +163,14 @@ info.onAdd = function (map) {
 
 info.update = function(countryName) {
 	
-
+//API swiftuijam.herokuapp.com COVID vaccinations
 	const url_base  = `https://swiftuijam.herokuapp.com/`;
  
 	axios.get(url_base + `newestData/${countryName}`)
 	 .then(res => {
 	const total_vaccinations = res.data.total_vaccinations;
 	this._div.innerHTML = '<h4>World Total COVID Vaccinations Map</h4>' + '</b><br />' +  (countryName  ?
-        'Country Name: ' + countryName  + '</b><br />' +` Vaccinations: ` +  total_vaccinations
+        'Country Name: ' + countryName  + '</b><br />' +` Total vaccinations: ` +  total_vaccinations
         : 'Hover over a country');
 		
 })
