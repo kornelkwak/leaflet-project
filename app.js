@@ -64,6 +64,7 @@ fetch("world.geojson")
 			layer.feature.properties.percentVaccinated = percentVaccinated;
 			console.log(layer.feature.properties.percentVaccinated);
 
+			//Adding style of country and popup with vaccinations data
 			layer.setStyle({
 				fillColor: getColor(layer.feature.properties.percentVaccinated),
 				});
@@ -77,7 +78,6 @@ fetch("world.geojson")
 			  console.error(error);
 		  });
 		
-		  console.log(res.data);
 	})
 
 });
@@ -86,13 +86,12 @@ fetch("world.geojson")
 
 function getColor(d) {
 	
-	return d > 50 ? '#6E6E6E':
-		   d > 40 ? '#0DA904':
-		   d > 20 ? '#A6F702':
-		   d > 10 ? '#E78F09':
-		   d > 10 ? '#F0760A':
-		   d >= 0  ? '#F02D0A':
-					'#6E6E6E';
+	return d > 50 ? '#0DA904':
+		   d > 30 ? '#A6F702':
+		   d > 20 ? '#E78F09':
+		   d > 10 ? '#F02D0A':
+		   d >= 0 ? '#C70039':
+		  			'#6E6E6E';
 }
 
 function highlightFeature(e) {
@@ -179,3 +178,23 @@ info.update = function(countryName) {
 
 info.addTo(mymap);
 
+// Adding legend to map
+
+let legend = L.control({position: 'bottomright'});
+
+legend.onAdd = function (map) {
+
+const div = L.DomUtil.create('div', 'info legend'),
+	  grades = [0, 10, 20, 30, 50],
+	  labels = [];
+
+		for (let i = 0; i < grades.length; i++) {
+			div.innerHTML +=
+				'<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+				grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '%' + '<br>' : '+');
+		}
+	
+		return div;
+};
+	
+legend.addTo(mymap);
