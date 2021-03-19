@@ -68,11 +68,11 @@ fetch("world.geojson")
 			layer.setStyle({
 				fillColor: getColor(layer.feature.properties.percentVaccinated),
 				});
-			layer.bindPopup(`<h4>${countryName}</h4>` 
-			+ `Total vaccinations: ` +  total_vaccinations.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + '</b><br />' 
-			+ `Population: ` +  population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + '</b><br />'
-			+ `${percentVaccinated}% of population is vaccinated` + '</b><br />'
-			+ `Vaccine: ${vaccineTypes}`);
+			layer.bindPopup(`<h3>${countryName}</h3>` 
+			+ `<b>${percentVaccinated}%</b> of population is vaccinated` + '</b><br />'
+			+ `<b>Total vaccinations:</b> ` +  total_vaccinations.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + '</b><br />' 
+			+ `<b>Population:</b> ` +  population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + '</b><br />'
+			+ `<b>Vaccine:</b> ${vaccineTypes}`);
 			
 		  }).catch(function (error) {
 			  console.error(error);
@@ -169,7 +169,7 @@ info.update = function(countryName) {
 	 .then(res => {
 	const total_vaccinations = res.data.total_vaccinations;
 	this._div.innerHTML = '<h4>World Total COVID Vaccinations Map</h4>' + '</b><br />' +  (countryName  ?
-        'Country Name: ' + countryName  + '</b><br />' +` Total vaccinations: ` +  total_vaccinations
+        '<b>Country Name:</b> ' + countryName  + '</b><br />' +` <b>Total vaccinations:</b> ` +  total_vaccinations
         : 'Hover over a country');
 		
 })
@@ -187,7 +187,7 @@ legend.onAdd = function (map) {
 const div = L.DomUtil.create('div', 'info legend'),
 	  grades = [0, 10, 20, 30, 50],
 	  labels = [];
-
+		div.innerHTML = '<h4>Legend:</h4>' + '<i style="background: #6E6E6E"></i> ' +  'no data' + '<br>';
 		for (let i = 0; i < grades.length; i++) {
 			div.innerHTML +=
 				'<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
