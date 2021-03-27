@@ -1,4 +1,7 @@
-	var mymap = L.map('mapid').setView([51.505, -0.09], 2);
+	const mymap = L.map('mapid', {
+		minZoom: 2,
+    	maxZoom: 5.5
+	}).setView([51.505, -0.09], 2);
 
 	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
 		maxZoom: 18,
@@ -13,10 +16,10 @@
 let geojson = [];
 
 fetch("world.geojson")
-	.then(function(response) {
+	.then(response => {
 	return response.json();
 	})
-	.then(function(data) {
+	.then(data => {
 	
 	geojson = L.geoJSON(data, {
 		onEachFeature: onEachFeature,
@@ -27,12 +30,10 @@ fetch("world.geojson")
 	tempID = 1;
 
 	//Data from geojson about each country
-	geojson.eachLayer(function(layer) {
+	geojson.eachLayer(layer => {
 		layer.feature.properties.layerID = tempID;
 		tempID+=1;
 		let countryName = layer.feature.properties.NAME_ENGL;
-		let isocountryID = layer.feature.properties.iso3;
-			
 
 		//API swiftuijam.herokuapp.com COVID vaccinations
 		const url_base_covid  = `https://swiftuijam.herokuapp.com/`;
@@ -55,14 +56,12 @@ fetch("world.geojson")
 			}
 		  };
 		  
-		  axios.request(options).then(function (response) {
-			  console.log(response.data.body.population);
+		  axios.request(options).then(response => {
 			  let population = response.data.body.population;
 			  let percentVaccinated = parseFloat(total_vaccinations/population * 100).toFixed(2);
 			  
 			layer.feature.properties.population = population;
 			layer.feature.properties.percentVaccinated = percentVaccinated;
-			console.log(layer.feature.properties.percentVaccinated);
 
 			//Adding style of country and popup with vaccinations data
 			layer.setStyle({
@@ -74,7 +73,7 @@ fetch("world.geojson")
 			+ `<b>Population:</b> ` +  population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + '</b><br />'
 			+ `<b>Vaccine:</b> ${vaccineTypes}`);
 			
-		  }).catch(function (error) {
+		  }).catch(error => {
 			  console.error(error);
 		  });
 		
@@ -84,7 +83,7 @@ fetch("world.geojson")
 
 });
 
-function getColor(d) {
+const getColor = d => {
 	
 	return d > 50 ? '#0DA904':
 		   d > 30 ? '#A6F702':
@@ -94,7 +93,7 @@ function getColor(d) {
 		  			'#6E6E6E';
 }
 
-function highlightFeature(e) {
+const highlightFeature = e => {
 	var layer = e.target;
 
 	layer.setStyle({
@@ -111,7 +110,7 @@ function highlightFeature(e) {
 	info.update(layer.feature.properties.NAME_ENGL);
 }
 
-function resetHighlight(e) {
+const resetHighlight = e => {
 	const layer = e.target;
 	geojson.resetStyle(e.target);
 	info.update();
@@ -121,14 +120,14 @@ function resetHighlight(e) {
 	
 }
 
-function zoomToFeature(e) {
+const zoomToFeature = e => {
 	const layer = e.target;
 	mymap.fitBounds(e.target.getBounds());
 	
 	
 }
 
-function onEachFeature(feature, layer) {
+const onEachFeature = (feature, layer) => {
 	layer.on({
 		mouseover: highlightFeature,
 		mouseout: resetHighlight,
@@ -137,7 +136,7 @@ function onEachFeature(feature, layer) {
 	});
 }
 
-function style(feature) {
+const style = feature => {
 	
 	return {
 		
@@ -150,8 +149,7 @@ function style(feature) {
 	};
 }
 
-//Adding control panel with informations about current country
-	
+//Adding control panel with informations about current country	
 const info = L.control();
 	
 info.onAdd = function (map) {
@@ -160,7 +158,7 @@ info.onAdd = function (map) {
 	return this._div;
 };
 
-info.update = function(countryName) {
+info.update = function (countryName) {
 	
 //API swiftuijam.herokuapp.com COVID vaccinations
 	const url_base  = `https://swiftuijam.herokuapp.com/`;
@@ -179,10 +177,9 @@ info.update = function(countryName) {
 info.addTo(mymap);
 
 // Adding legend to map
+const legend = L.control({position: 'bottomright'});
 
-let legend = L.control({position: 'bottomright'});
-
-legend.onAdd = function (map) {
+legend.onAdd = map => {
 
 const div = L.DomUtil.create('div', 'info legend'),
 	  grades = [0, 10, 20, 30, 50],
@@ -198,3 +195,6 @@ const div = L.DomUtil.create('div', 'info legend'),
 };
 	
 legend.addTo(mymap);
+
+//Adding map scale 
+const scale = L.control.scale().addTo(mymap);
