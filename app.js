@@ -1,10 +1,12 @@
 	const mymap = L.map('mapid', {
+		maxBounds: [[-90, -260],[90, 260]],
+      	maxBoundsViscosity: 1,
 		minZoom: 2,
     	maxZoom: 5.5
 	}).setView([51.505, -0.09], 2);
 
 	L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-		maxZoom: 18,
+		continuousWorld: 'false',
 		attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
 			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
 		id: 'mapbox/streets-v11',
