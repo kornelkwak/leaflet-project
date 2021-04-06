@@ -88,7 +88,7 @@ fetch("world.geojson")
 const getColor = d => {
 	
 	return d > 50 ? '#0DA904':
-		   d > 30 ? '#A6F702':
+		   d > 30 ? '#B4EE00':
 		   d > 20 ? '#E78F09':
 		   d > 10 ? '#F02D0A':
 		   d >= 0 ? '#C70039':
@@ -199,4 +199,5 @@ const div = L.DomUtil.create('div', 'info legend'),
 legend.addTo(mymap);
 
 //Adding map scale 
-const scale = L.control.scale().addTo(mymap);
+const scale = L.control.scale({imperial:false});
+scale.addTo(mymap);

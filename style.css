@@ -37,3 +37,21 @@ body {
     margin-right: 8px;
     opacity: 0.7;
     }
+
+.leaflet-control-scale-line { 
+    margin: 15px;
+    font: 12px/16px Arial, Helvetica, sans-serif;
+    color:rgb(47, 37, 201);
+    background: rgba(255,255,255,0.7);
+    border-color: rgb(47, 37, 201);
+    border-radius: 0 0 5px 5px;
+}
+
+.info.legend.leaflet-control {
+    margin: 20px;
+}
+
+a.leaflet-control-zoom-in, a.leaflet-control-zoom-out {
+    color:rgb(47, 37, 201);
+    margin-bottom: 2px;
+}
