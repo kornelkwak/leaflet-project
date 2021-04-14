@@ -4,6 +4,8 @@
 
 This project is a world choropleth map showing coronavirus vaccination data for every country in the world and the percentage of vaccinated people in the total world population. You can check current COVID vaccinations situation in each country in the world.
 
+Project live: https://kornelkwak.github.io/leaflet-project/
+
 ## API used
 
 * https://swiftuijam.herokuapp.com/ - data about COVID vaccinations in the World
